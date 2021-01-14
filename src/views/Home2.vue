@@ -23,7 +23,10 @@
               </div>
               <div v-else>
                 <div v-for="(element, index) in listUsers" :key="index">
-                  <Card v-bind:element="element" v-on:actionDariChild="eventChild"/>
+                  <div class="m-2">
+                    {{element.name}}
+                    <button @click="addToCart(element)">Add to Cart</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -35,13 +38,10 @@
               Cart
             </div>
             <div class="card-body">
-              <div v-for="(items, index) in dataCart" :key="index">
-                <img :src="items.img" style="width:50px;height:50px;" alt="" srcset="">
-                {{items.name}}
+              <div v-for="(item, index) in dataCart" :key="index">
+                {{item.name}} - {{item.price}}
                 <br/>
-                Qty: {{items.qty}}
-                <br/>
-                <button @click="deleteCart(items.id)">Tidak jadi</button>
+                Qty: {{item.qty}}
               </div>
             </div>
           </div>
@@ -53,13 +53,11 @@
 
 <script>
 import Axios from 'axios'
-import Card from '../components/Card'
 import Navbar from '../components/Navbar'
 import Sidemenu from '../components/Sidemenu'
 export default {
   name: 'Home',
   components: {
-    Card,
     Navbar,
     Sidemenu
   },
@@ -77,32 +75,27 @@ export default {
     setSidemenu: function () {
       this.sidemenuShow = !this.sidemenuShow
     },
-    deleteCart: function (id) {
-      const dataCartBaru = this.dataCart.filter((item) => {
-        return item.id !== id
+    addToCart: function (value) {
+      // check apakah produk sudah ada di cart
+      const checkProduk = this.dataCart.filter((item) => {
+        return item.id === value.id
       })
-      this.dataCart = dataCartBaru
-    },
-    eventChild: function (element) {
-      // alert('123')
-      const checkCart = this.dataCart.filter((item) => {
-        if (item.id === element.id) {
-          return item
-        }
-      })
-      if (checkCart.length >= 1) {
-        this.dataCart.forEach(item => {
-          if (item.id === element.id) {
-            item.qty += 1
+      if (checkProduk.length >= 1) {
+        // apabila produk ada di cart
+        // cari produk yg id nya sama kemudian update qty nya
+        this.dataCart.forEach(element => {
+          if (element.id === value.id) {
+            element.qty += 1
           }
         })
       } else {
+        // apabila produk tidak ada di cart
         const dataBaru = {
-          id: element.id,
-          name: element.name,
-          price: element.price,
-          img: element.img,
-          qty: 1
+          id: value.id,
+          qty: 1,
+          name: value.name,
+          price: value.price,
+          img: value.img
         }
         this.dataCart = [...this.dataCart, dataBaru]
       }

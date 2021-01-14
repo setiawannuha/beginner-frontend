@@ -1,6 +1,7 @@
 <template>
   <div class="about">
     <div class="container">
+      <Navbar title="About" type="1"/>
       <h1>Insert Book</h1>
       <div class="card">
         <div class="card-body">
@@ -18,6 +19,7 @@
 <script>
 import Axios from 'axios'
 import router from '../router/index'
+import Navbar from '../components/Navbar'
 export default {
   data () {
     return {
@@ -27,6 +29,9 @@ export default {
         deskripsi: ''
       }
     }
+  },
+  components: {
+    Navbar
   },
   methods: {
     onInsert: function () {
